@@ -1,6 +1,7 @@
 // Targeting user profile information
 const overview = document.querySelector(".overview");
 const username = "Erin3511";
+const repoList = document.querySelector(".repo-list");
 
 const getProfileData = async function () {
     const userRequest = await fetch (
@@ -26,5 +27,23 @@ const displayProfileData = function (data) {
       <p><strong>Number of public repos:</strong> ${data.public_repos}</p>
     </div> 
 `;
-overview.append(div);
+  overview.append(div);
+  getRepos();
+}; 
+
+const getRepos = async function () {
+  const reposRequest = await fetch (
+      `https://api.github.com/users/${username}/repos?sort=updated&per_page=100`
+  );
+  const repoData = await reposRequest.json();
+  displayRepos(repoData);
+};
+
+const displayRepos = function (repos) {
+  for (const repo of repos) {
+    const repoItem = document.createElement("li");
+    repoItem.classList.add("repo");
+    repoItem.innerHTML = `<h3>${repo.name}</h3>`;
+    repoList.append(repoItem);
+  }
 };
